@@ -32,7 +32,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var group = await svc.CreateGroupAsync("Math Club", Subject.Math, new[] { 1, 2 });
+        var group = await svc.CreateGroupAsync("Math Club", Subject.Math, [1, 2]);
 
         Assert.That(group.StudyGroupId, Is.GreaterThan(0));
         Assert.That(group.Name, Is.EqualTo("Math Club"));
@@ -46,7 +46,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var group = await svc.CreateGroupAsync("Solo Study", Subject.Physics, Array.Empty<int>());
+        var group = await svc.CreateGroupAsync("Solo Study", Subject.Physics, []);
 
         Assert.That(group.StudyGroupId, Is.GreaterThan(0));
         Assert.That(group.Members.Count, Is.EqualTo(0));
@@ -61,7 +61,7 @@ public class StudyGroupServiceTests
         var svc = new StudyGroupService(db);
 
         var ex = Assert.ThrowsAsync<ArgumentException>(() =>
-            svc.CreateGroupAsync(name, Subject.Math, Array.Empty<int>()));
+            svc.CreateGroupAsync(name, Subject.Math, []));
         Assert.That(ex!.Message, Does.Contain("Invalid name length"));
     }
 
@@ -72,7 +72,7 @@ public class StudyGroupServiceTests
         var svc = new StudyGroupService(db);
 
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
-            svc.CreateGroupAsync("Group", Subject.Math, new[] { 999 }));
+            svc.CreateGroupAsync("Group", Subject.Math, [int.MaxValue]));
         Assert.That(ex!.Message, Does.Contain("Some users do not exist"));
     }
 
@@ -82,10 +82,10 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        await svc.CreateGroupAsync("First Math", Subject.Math, new[] { 1 });
+        await svc.CreateGroupAsync("First Math", Subject.Math, [1]);
 
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
-            svc.CreateGroupAsync("Second Math", Subject.Math, new[] { 1 }));
+            svc.CreateGroupAsync("Second Math", Subject.Math, [1]));
         Assert.That(ex!.Message, Does.Contain("already in a group"));
     }
 
@@ -95,7 +95,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var created = await svc.CreateGroupAsync("Test Group", Subject.Math, new[] { 1 });
+        var created = await svc.CreateGroupAsync("Test Group", Subject.Math, [1]);
         var retrieved = await svc.GetByIdAsync(created.StudyGroupId);
 
         Assert.That(retrieved, Is.Not.Null);
@@ -109,7 +109,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var result = await svc.GetByIdAsync(999);
+        var result = await svc.GetByIdAsync(1);
 
         Assert.That(result, Is.Null);
     }
@@ -120,8 +120,8 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        await svc.CreateGroupAsync("Math 1", Subject.Math, Array.Empty<int>());
-        await svc.CreateGroupAsync("Physics 1", Subject.Physics, Array.Empty<int>());
+        await svc.CreateGroupAsync("Math 1", Subject.Math, []);
+        await svc.CreateGroupAsync("Physics 1", Subject.Physics, []);
 
         var groups = await svc.GetAllAsync();
 
@@ -134,9 +134,9 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        await svc.CreateGroupAsync("Math 1", Subject.Math, Array.Empty<int>());
-        await svc.CreateGroupAsync("Math 2", Subject.Math, Array.Empty<int>());
-        await svc.CreateGroupAsync("Physics 1", Subject.Physics, Array.Empty<int>());
+        await svc.CreateGroupAsync("Math 1", Subject.Math, []);
+        await svc.CreateGroupAsync("Math 2", Subject.Math, []);
+        await svc.CreateGroupAsync("Physics 1", Subject.Physics, []);
 
         var mathGroups = await svc.SearchAsync(Subject.Math);
 
@@ -150,7 +150,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, Array.Empty<int>());
+        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, []);
         var result = await svc.JoinGroupAsync(group.StudyGroupId, 1);
 
         Assert.That(result, Is.True);
@@ -162,7 +162,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var group = await svc.CreateGroupAsync("Math Group", Subject.Math, new[] { 1 });
+        var group = await svc.CreateGroupAsync("Math Group", Subject.Math, [1]);
         var result = await svc.JoinGroupAsync(group.StudyGroupId, 1);
 
         Assert.That(result, Is.False);
@@ -173,9 +173,8 @@ public class StudyGroupServiceTests
     {
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
-
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
-            svc.JoinGroupAsync(999, 1));
+            svc.JoinGroupAsync(1, 1));
         Assert.That(ex!.Message, Does.Contain("Group does not exist"));
     }
 
@@ -184,10 +183,10 @@ public class StudyGroupServiceTests
     {
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
-
-        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, Array.Empty<int>());
+        var nonExisting = db.Users.Max(x => x.UserId) + 1;
+        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, []);
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
-            svc.JoinGroupAsync(group.StudyGroupId, 999));
+            svc.JoinGroupAsync(group.StudyGroupId, nonExisting));
         Assert.That(ex!.Message, Does.Contain("User does not exist"));
     }
 
@@ -197,7 +196,7 @@ public class StudyGroupServiceTests
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
 
-        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, new[] { 1 });
+        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, [1]);
         var result = await svc.LeaveGroupAsync(group.StudyGroupId, 1);
 
         Assert.That(result, Is.True);
@@ -208,11 +207,10 @@ public class StudyGroupServiceTests
     {
         using var db = CreateDb();
         var svc = new StudyGroupService(db);
-
-        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, Array.Empty<int>());
-        var result = await svc.LeaveGroupAsync(group.StudyGroupId, 999);
+        var nonExisting = db.Users.Max(x => x.UserId) + 1;
+        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, []);
+        var result = await svc.LeaveGroupAsync(group.StudyGroupId, nonExisting);
 
         Assert.That(result, Is.True);
     }
-
 }

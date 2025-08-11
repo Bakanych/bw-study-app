@@ -1,68 +1,68 @@
 <!doctype html>
 <html data-theme="auto" lang="en" style="font-size: 14px;">
 <head>
-  <meta charset="utf-8">
-  <title>Study Groups</title>
-  <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css"
->
+    <meta charset="utf-8">
+    <title>Study Groups</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css"
+            rel="stylesheet"
+    >
 </head>
 <body>
-  <main class="container">
+<main class="container">
     <h1>Study Groups</h1>
 
     <section>
-      <h2>Create Group</h2>
-      <form onsubmit="createGroup(event)" style="display:flex;gap:.5rem;align-items:center">
-        <input id="groupName" type="text" placeholder="Group name"  required>
-        <select id="subject">
-          <option>Math</option>
-          <option>Chemistry</option>
-          <option>Physics</option>
-        </select>
-        <button type="submit">Create</button>
-      </form>
+        <h2>Create Group</h2>
+        <form onsubmit="createGroup(event)" style="display:flex;gap:.5rem;align-items:center">
+            <input id="groupName" placeholder="Group name" required type="text">
+            <select id="subject">
+                <option>Math</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+            </select>
+            <button type="submit">Create</button>
+        </form>
     </section>
 
     <section>
-      <h2>Groups</h2>
-      <form onsubmit="loadGroups();return false" style="display:flex;gap:.5rem;align-items:center">
-        <select id="filterSubject">
-          <option value="">All</option>
-          <option>Math</option>
-          <option>Chemistry</option>
-          <option>Physics</option>
-        </select>
-        <select id="sortOrder">
-          <option value="desc">Newest</option>
-          <option value="asc">Oldest</option>
-        </select>
-        <button type="submit">Load</button>
-      </form>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Subject</th>
-            <th>Members</th>
-          </tr>
-        </thead>
-        <tbody id="groups"></tbody>
-      </table>
+        <h2>Groups</h2>
+        <form onsubmit="loadGroups();return false" style="display:flex;gap:.5rem;align-items:center">
+            <select id="filterSubject">
+                <option value="">All</option>
+                <option>Math</option>
+                <option>Chemistry</option>
+                <option>Physics</option>
+            </select>
+            <select id="sortOrder">
+                <option value="desc">Newest</option>
+                <option value="asc">Oldest</option>
+            </select>
+            <button type="submit">Load</button>
+        </form>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Members</th>
+            </tr>
+            </thead>
+            <tbody id="groups"></tbody>
+        </table>
     </section>
 
     <section>
-      <h2>Membership</h2>
-      <form onsubmit="updateMembership(event)" style="display:flex;gap:.5rem;align-items:center">
-        <input id="memberGroupId" type="number" placeholder="Group ID" required>
-        <input id="memberUserId" type="number" placeholder="User ID" required>
-        <button type="submit" value="join" class="primary">Join</button>
-        <button type="submit" value="leave" class="secondary">Leave</button>
-      </form>
+        <h2>Membership</h2>
+        <form onsubmit="updateMembership(event)" style="display:flex;gap:.5rem;align-items:center">
+            <input id="memberGroupId" placeholder="Group ID" required type="number">
+            <input id="memberUserId" placeholder="User ID" required type="number">
+            <button class="primary" type="submit" value="join">Join</button>
+            <button class="secondary" type="submit" value="leave">Leave</button>
+        </form>
     </section>
-  </main>
-  <script src="app.js"></script>
+</main>
+<script src="app.js"></script>
 </body>
 </html>

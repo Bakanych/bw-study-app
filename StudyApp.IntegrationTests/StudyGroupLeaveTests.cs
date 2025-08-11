@@ -6,7 +6,7 @@ namespace StudyApp.IntegrationTests;
 
 public class StudyGroupLeaveTests : IntegrationFixture
 {
-    private List<int> _availableUserIds = new();
+    private List<int> _availableUserIds = [];
     private int _emptyGroupId;
     private int _mathGroupId;
     private int _physicsGroupId;
@@ -94,9 +94,10 @@ public class StudyGroupLeaveTests : IntegrationFixture
     {
         // Arrange
         var userId = _availableUserIds[0];
+        var nonExistentGroupId = GetNonExistingGroupId();
 
         // Act
-        var response = await ApiClient.PostAsync($"/api/studygroups/99999/leave?userId={userId}", null);
+        var response = await ApiClient.PostAsync($"/api/studygroups/{nonExistentGroupId}/leave?userId={userId}", null);
 
         // Assert
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));

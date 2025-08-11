@@ -87,4 +87,20 @@ public abstract class IntegrationFixture
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         return await dbContext.Users.Take(count).Select(u => u.UserId).ToListAsync();
     }
+
+    protected int GetNonExistingUserId()
+    {
+        using var scope = _app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var maxUserId = dbContext.Users.Max(u => u.UserId);
+        return maxUserId + 1;
+    }
+
+    protected int GetNonExistingGroupId()
+    {
+        using var scope = _app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var maxUserId = dbContext.StudyGroups.Max(u => u.StudyGroupId);
+        return maxUserId + 1;
+    }
 }

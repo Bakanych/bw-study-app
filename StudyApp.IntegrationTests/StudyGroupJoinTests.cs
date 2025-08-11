@@ -6,7 +6,7 @@ namespace StudyApp.IntegrationTests;
 
 public class StudyGroupJoinTests : IntegrationFixture
 {
-    private List<int> _availableUserIds = new();
+    private List<int> _availableUserIds = [];
     private int _chemistryGroupId;
     private int _mathGroupId;
     private int _physicsGroupId;
@@ -100,7 +100,7 @@ public class StudyGroupJoinTests : IntegrationFixture
     public async Task Join_ReturnsBadRequest_WhenGroupDoesNotExist()
     {
         // Arrange
-        var nonExistentGroupId = 99999;
+        var nonExistentGroupId = GetNonExistingUserId();
         var userId = _availableUserIds[0];
 
         // Act

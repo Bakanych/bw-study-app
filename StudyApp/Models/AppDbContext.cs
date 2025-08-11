@@ -58,7 +58,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         var groups = groupFaker.Generate(targetGroupCount);
         StudyGroups.AddRange(groups);
-        
+
         SaveChanges();
     }
 }
