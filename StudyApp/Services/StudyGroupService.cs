@@ -69,9 +69,13 @@ public class StudyGroupService(AppDbContext db) : IStudyGroupService
 
     public async Task<bool> JoinGroupAsync(int groupId, int userId)
     {
-        var group = await db.StudyGroups.FindAsync(groupId) ??
-                    throw new InvalidOperationException("Group does not exist");
-        ;
+        var group = await db.StudyGroups.FindAsync(groupId)
+                    ?? throw new InvalidOperationException("Group does not exist");
+
+        var userExists = await db.Users.AnyAsync(u => u.UserId == userId);
+        if (!userExists)
+            throw new InvalidOperationException("User does not exist");
+
         // user can have only one group per subject
         var alreadyInSubject = await db.StudyGroupMembers
             .Where(m => m.UserId == userId)
@@ -91,6 +95,9 @@ public class StudyGroupService(AppDbContext db) : IStudyGroupService
 
     public async Task<bool> LeaveGroupAsync(int groupId, int userId)
     {
+        var groupExists = await db.StudyGroups.AnyAsync(g => g.StudyGroupId == groupId);
+        if (!groupExists) return false;
+
         var membership =
             await db.StudyGroupMembers.FirstOrDefaultAsync(m => m.StudyGroupId == groupId && m.UserId == userId);
         if (membership is null) return true; // Idempotent - already not a member

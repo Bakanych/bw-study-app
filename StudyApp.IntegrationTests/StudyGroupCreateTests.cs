@@ -73,7 +73,6 @@ public class StudyGroupCreateTests : IntegrationFixture
     [TestCase("")]
     [TestCase("    ")]
     [TestCase("abcd")]
-    [TestCase("abcd")]
     [TestCase("1234567890123456789012345678901")]
     public async Task Create_Fails_WhenNameHasInvalidLength(string? name)
     {
@@ -89,8 +88,6 @@ public class StudyGroupCreateTests : IntegrationFixture
         // Assert
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         var responseError = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-        var responseContent = await response.Content.ReadAsStringAsync();
-
         Assert.That(responseError!.Error, Does.Contain("Invalid name length"));
     }
 
@@ -110,8 +107,6 @@ public class StudyGroupCreateTests : IntegrationFixture
         // Assert
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         var responseError = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-        var responseContent = await response.Content.ReadAsStringAsync();
-
         Assert.That(responseError!.Error, Does.Contain("required"));
     }
 

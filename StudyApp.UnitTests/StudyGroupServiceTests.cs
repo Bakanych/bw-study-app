@@ -52,8 +52,6 @@ public class StudyGroupServiceTests
         Assert.That(group.Members.Count, Is.EqualTo(0));
     }
 
-    // Note: Invalid subject test removed - enum prevents invalid subjects at compile time
-
     [TestCase("")]
     [TestCase("abc")]
     [TestCase("This name is way too long for the validation")]
@@ -182,6 +180,18 @@ public class StudyGroupServiceTests
     }
 
     [Test]
+    public async Task JoinGroupAsync_ThrowsInvalidOperationException_UserNotExists()
+    {
+        using var db = CreateDb();
+        var svc = new StudyGroupService(db);
+
+        var group = await svc.CreateGroupAsync("Test Group", Subject.Math, Array.Empty<int>());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() =>
+            svc.JoinGroupAsync(group.StudyGroupId, 999));
+        Assert.That(ex!.Message, Does.Contain("User does not exist"));
+    }
+
+    [Test]
     public async Task LeaveGroupAsync_Success_WhenUserIsMember()
     {
         using var db = CreateDb();
@@ -205,5 +215,4 @@ public class StudyGroupServiceTests
         Assert.That(result, Is.True);
     }
 
-    // Note: Subjects.IsValid test removed - using Subject enum provides compile-time validation
 }

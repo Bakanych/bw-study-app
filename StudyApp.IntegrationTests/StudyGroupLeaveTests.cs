@@ -89,6 +89,19 @@ public class StudyGroupLeaveTests : IntegrationFixture
         Assert.That(group!.Members.Count, Is.EqualTo(3));
     }
 
+    [Test]
+    public async Task Leave_ReturnsBadRequest_WhenGroupDoesNotExist()
+    {
+        // Arrange
+        var userId = _availableUserIds[0];
+
+        // Act
+        var response = await ApiClient.PostAsync($"/api/studygroups/99999/leave?userId={userId}", null);
+
+        // Assert
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+    }
+
     [TestCase(0, 0)]
     [TestCase(-1, -1)]
     [TestCase(null, 1)]

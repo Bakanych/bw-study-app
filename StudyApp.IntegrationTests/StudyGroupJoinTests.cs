@@ -35,9 +35,9 @@ public class StudyGroupJoinTests : IntegrationFixture
     public async Task Join_AllowsMultipleUsersInSameGroup()
     {
         // Arrange - Use existing users who are not in any groups yet
-        var userId1 = 5;
-        var userId2 = 6;
-        var userId3 = 7;
+        var userId1 = _availableUserIds[4];
+        var userId2 = _availableUserIds[5];
+        var userId3 = _availableUserIds[6];
 
         // Act - Multiple users join the same group
         var response1 = await ApiClient.PostAsync($"/api/studygroups/{_chemistryGroupId}/join?userId={userId1}", null);
@@ -97,11 +97,11 @@ public class StudyGroupJoinTests : IntegrationFixture
     }
 
     [Test]
-    public async Task Join_ReturnsBadRequest_WhenRequestParamsAreInvalid()
+    public async Task Join_ReturnsBadRequest_WhenGroupDoesNotExist()
     {
         // Arrange
         var nonExistentGroupId = 99999;
-        var userId = 20;
+        var userId = _availableUserIds[0];
 
         // Act
         var response = await ApiClient.PostAsync($"/api/studygroups/{nonExistentGroupId}/join?userId={userId}", null);
@@ -116,7 +116,7 @@ public class StudyGroupJoinTests : IntegrationFixture
     [TestCase(0, 0)]
     [TestCase(-1, -1)]
     [TestCase(int.MaxValue, int.MaxValue)]
-    public async Task Join_ReturnsBadRequest_WhenRequestParamsAreInvalid(int userId, int groupId)
+    public async Task Join_ReturnsBadRequest_WhenParamsAreInvalid(int userId, int groupId)
     {
         // Act
         var response = await ApiClient.PostAsync($"/api/studygroups/{groupId}/join?userId={userId}", null);
