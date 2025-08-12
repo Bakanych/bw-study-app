@@ -27,15 +27,17 @@ public class StudyGroupCreateTests : IntegrationFixture
         Assert.That(createdGroup!.Members, Is.Empty);
     }
 
-    [Test]
-    public async Task Create_CreatesGroup_WhenDataIsValid()
+    [TestCase("Math Club", "Math")]
+    [TestCase("Клуб \"Эбонитовая палочка\" ⚡🪄", "Physics")]
+
+    public async Task Create_CreatesGroup_WhenDataIsValid(string name, string subject)
     {
         // Arrange
         var userIds = await GetAvailableUserIds(3);
         var data = new
         {
-            Name = "Math Club",
-            Subject = "Math",
+            Name = name,
+            Subject = subject,
             UserIds = userIds.ToArray()
         };
 
@@ -46,7 +48,7 @@ public class StudyGroupCreateTests : IntegrationFixture
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         var group = await response.Content.ReadFromJsonAsync<StudyGroup>();
         Assert.That(group!.Name, Is.EqualTo(data.Name));
-        Assert.That(group.Subject, Is.EqualTo(Subject.Math));
+        Assert.That(group.Subject, Is.EqualTo(Enum.Parse<Subject>(subject)));
         Assert.That(group.CreateDate.Date, Is.EqualTo(DateTime.UtcNow.Date));
         Assert.That(group.Members.Select(x => x.UserId).ToList(), Is.EquivalentTo(data.UserIds));
     }

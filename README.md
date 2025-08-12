@@ -101,3 +101,33 @@ JOIN Users u ON u.UserId = sgm.UserId
 WHERE u.Name LIKE 'M%'
 ORDER BY sg.CreateDate ASC;
 ```
+
+## E2E & Manual Test Strategy
+
+- Use real environment with real production data.
+- Target user experiense instead of architecture goals.
+- Use explarotory testing to find out non-obvious behaviour and avoid repetition of the same synthetic tests.
+- **Mobile/responsive UX (essential):**
+    - it's all about mobile experience nowadays. Any web app should be tested from mobile layouts.
+    - iPhone/Android device emulation: form fields usable with virtual keyboard; no blocked actions by copy/paste popups; buttons tappable; lists scroll correctly.
+- **Cross-browser smoke** Chrome, Edge, Firefox; verify no layout breakage and that the static UI works.
+- Carefully test notifications (email, messengers). Can be dangerous zone when testing in real env.
+  
+
+- For E2E test automation: aim zero flakiness to earn trust. Do not accept agresive retry patterns to elminate flakiness, fix test setup instead.
+
+
+## Extra Concurrency & Robustness Tests (integration focus)
+
+- **Race on “join same subject”:** Fire `N` parallel join requests for different groups but same subject and user (e.g., `Task.WhenAll`).  
+- **Idempotent leave:** Two concurrent leaves for the same (group, user) should result in zero membership and 200 OK both times.  
+- **Transaction boundaries:** Repository operations that modify membership run within transactions; tests assert atomicity (no partial writes).
+
+
+## Known limitations / Backlog
+ 
+- **Edit/delete groups** not implemented (task scope).  
+- **Server-side sort param**: UI implements newest/oldest; API can be extended to support server-side sorting.
+- **UI automation**: Playwright can be considered as optimal choice for UI automation for smoke + cross-browser matrix.  
+- **Feature flags & rollouts**: Next step—wire a simple env-based flag to hide/show the feature per environment.  
+- **Notifications (email/messenger)**: Out of scope; if added, use MailHog/test doubles in non-prod to avoid real deliveries.
