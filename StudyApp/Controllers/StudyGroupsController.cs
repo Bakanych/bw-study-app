@@ -74,4 +74,12 @@ public class StudyGroupsController(IStudyGroupService service) : ControllerBase
         if (!ok) return BadRequest();
         return Ok();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteStudyGroup(int id)
+    {
+        var ok = await service.DeleteGroupAsync(id);
+        if (!ok) return BadRequest();
+        return NoContent();
+    }
 }

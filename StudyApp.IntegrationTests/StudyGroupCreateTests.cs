@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using NaughtyStrings;
 using StudyApp.Models;
 
 namespace StudyApp.IntegrationTests;
@@ -27,9 +28,16 @@ public class StudyGroupCreateTests : IntegrationFixture
         Assert.That(createdGroup!.Members, Is.Empty);
     }
 
+    private static IEnumerable<string[]> NaughtyStrings()
+    {
+        return TheNaughtyStrings.All
+            .Where(x => x.Length is >= 5 and <= 30)
+            .Select(x => new[] { x, nameof(Subject.Chemistry) });
+    }
+
     [TestCase("Math Club", "Math")]
     [TestCase("Клуб \"Эбонитовая палочка\" ⚡🪄", "Physics")]
-
+    [TestCaseSource(nameof(NaughtyStrings))]
     public async Task Create_CreatesGroup_WhenDataIsValid(string name, string subject)
     {
         // Arrange

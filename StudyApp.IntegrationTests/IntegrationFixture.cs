@@ -16,11 +16,12 @@ public abstract class IntegrationFixture
     private WebApplicationFactory<Program> _app;
     private MsSqlContainer _sqlContainer;
     protected HttpClient ApiClient;
+    protected AppDbContext DbContext;
 
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
-        // Start SQL Server container
+        // Start an SQL Server container
         _sqlContainer = new MsSqlBuilder()
             .WithPassword("YourStrong@Passw0rd")
             .Build();
@@ -46,16 +47,17 @@ public abstract class IntegrationFixture
         ApiClient = _app.CreateClient();
 
         // Initialize database and seed test data
-        using var scope = _app.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await db.Database.EnsureCreatedAsync();
-        db.Seed();
+        var scope = _app.Services.CreateScope();
+        DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await DbContext.Database.EnsureCreatedAsync();
+        DbContext.Seed();
     }
 
 
     [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
+        await DbContext.DisposeAsync();
         ApiClient.Dispose();
         await _app.DisposeAsync();
         await _sqlContainer.DisposeAsync();

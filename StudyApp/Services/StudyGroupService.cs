@@ -11,6 +11,7 @@ public interface IStudyGroupService
     Task<bool> LeaveGroupAsync(int groupId, int userId);
     Task<List<StudyGroup>> SearchAsync(Subject? subject);
     Task<List<StudyGroup>> GetAllAsync();
+    Task<bool> DeleteGroupAsync(int id);
 }
 
 public class StudyGroupService(AppDbContext db) : IStudyGroupService
@@ -125,6 +126,15 @@ public class StudyGroupService(AppDbContext db) : IStudyGroupService
             .Include(g => g.Members)
             .ThenInclude(m => m.User)
             .ToListAsync();
+    }
+
+    public async Task<bool> DeleteGroupAsync(int id)
+    {
+        await db.StudyGroups
+            .Where(x => x.StudyGroupId == id)
+            .ExecuteDeleteAsync();
+
+        return true;
     }
 
     private async Task<bool> AreUsersInSubjectGroupAsync(IEnumerable<int> userIds, Subject subject)

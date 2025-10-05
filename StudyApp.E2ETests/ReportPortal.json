@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/reportportal/agent-net-nunit/master/src/ReportPortal.NUnitExtension/ReportPortal.config.schema",
+  "enabled": true,
+  "server": {
+    "url": "https://demo.reportportal.io/",
+    "project": "default_personal",
+    "apiKey": "test_4orqxan_QKmIGfQ2Nao6qYRz5OgN_tsILaxt9xPQqJgdJyev7r5NhPSYtejRbyHW"
+  },
+  "launch": {
+    "name": "Study App",
+    "debugMode": true
+  },
+  "rootNamespaces": [
+    "StudyApp.E2ETests.dll",
+    "StudyApp.E2ETests",
+    "StudyApp",
+    "E2ETests"
+  ]
+}
