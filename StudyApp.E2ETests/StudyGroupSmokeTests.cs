@@ -5,11 +5,12 @@ namespace StudyApp.E2ETests;
 
 public class StudyGroupSmokeTests : EndToEndTest
 {
-    private string _groupName;
+    private string? _groupName;
 
     [SetUp]
-    public async Task Setup()
+    public override async Task Setup()
     {
+        await base.Setup();
         await Page.GotoAsync("http://localhost:8080/");
     }
 

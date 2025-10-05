@@ -19,4 +19,8 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-      - run: dotnet test
+      - run: |
+          dotnet build
+          pwsh StudyApp.E2ETests/bin/Debug/net9.0/playwright.ps1 install 
+          docker compose up -d --build
+          dotnet test --no-build
